@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/dist/output.css" rel="stylesheet">
+</head>
+<body>
+    <audio id="sound"></audio>
+
+    <div class="bg-white w-[500px]  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl pb-12"> 
+        <div class="flex justify-around mt-8">
+            <input type="search" placeholder="srearch" id="inp-word" class="p-2 w-2/3 outline-none border-b-2 border-b-purple-400"> 
+            <button class="bg-purple-400 py-2 px-6 text-white rounded-sm" id="search-btn"> search </button>
+        </div>
+            <div id="result" class="mt-28 mx-4 relative"></div>
+    </div>
+
+
+    <script>
+        const url = "https://api.dictionaryapi.dev/api/v2/entries/en/";
+        const result = document.getElementById("result");
+        const sound = document.getElementById("sound");
+        const btn = document.getElementById("search-btn");
+
+        btn.addEventListener('click', () => {
+            let inpWord = document.getElementById('inp-word').value;
+            console.log(inpWord);
+            fetch(`${url} ${inpWord}`)
+            .then((response) => response.json())
+            .then((data) => {
+            console.log(data);
+            result.innerHTML = `
+            <div class="flex items-center justify-between mx-4">
+                <h3 class="text-2xl text-purple-600"> ${inpWord} </h3>
+                <button onclick="playSound();">
+                <img src="volume-up-interface-symbol.png" class="w-6 h-6">
+                </button>
+                </div>
+            <div class="my-2 mx-4 flex">
+                <p class="text-blue"> ${data[0].meanings[0].partOfSpeech} </p>
+                <p class="text-blue"> /${data[0].phonetic}/</p>
+            </div>
+            <p class="mx-4">
+            ${data[0].meanings[0].definitions[0].definition}
+            </p>
+            <p class="italic mx-4 border-l-2 border-l-purple-500 space-y-8 px-4">
+            ${data[0].meanings[0].definitions[0].example || ' '};
+            </p>
+            `;
+            sound.setAttribute('src', `https:${data[0].phonetics[0].audio}`);
+            console.log(sound);
+            })
+            .catch(() => {
+                result.innerHTML = `<h3> couldn't find the wod </h3>`;
+            })
+        });
+
+        function playSound(){
+            sound.play();
+        }
+
+
+
+
+    
+        
+    
+    
+    </script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
